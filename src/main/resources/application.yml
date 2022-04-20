@@ -1,0 +1,7 @@
+application:
+  token: ${APPLICATION_TOKEN}
+  scheduler:
+    rate: 120
+
+server:
+  port: 8080
