@@ -1,0 +1,8 @@
+/* TEAM */
+	Maintainer: Victor Borovlev
+	email: borovl.victor@gmail.com
+	From: Novosibirsk, Russia
+  
+	(First) Developer: Dmitry Mudryi
+	email: d.mudryi@intabia.ru
+	From: Novosibirsk, Russia
