@@ -1,4 +1,4 @@
 FROM openjdk:11
-COPY target/wikibot-1.0-SNAPSHOT.jar wikibot.jar
+COPY target/wikibot-1.0-SNAPSHOT.war wikibot.war
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","wikibot.jar"]
+ENTRYPOINT ["java","-jar","wikibot.war"]
