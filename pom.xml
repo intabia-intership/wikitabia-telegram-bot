@@ -17,7 +17,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>ru.intabia.wikitabia</groupId>
+    <groupId>com.intabia.wikitabia</groupId>
     <artifactId>wikibot</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
