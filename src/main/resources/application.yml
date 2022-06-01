@@ -5,3 +5,7 @@ application:
 
 server:
   port: 8080
+
+client:
+  url:
+    wiki: ${WIKITABIA_SERVER_URL}

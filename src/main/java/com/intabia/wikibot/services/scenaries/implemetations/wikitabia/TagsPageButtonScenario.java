@@ -1,27 +1,25 @@
 package com.intabia.wikibot.services.scenaries.implemetations.wikitabia;
 
-import java.util.List;
-
 import com.intabia.wikibot.datasavers.ChatData;
 import com.intabia.wikibot.datasavers.ChatDataContainer;
 import com.intabia.wikibot.dto.telegram.UpdateDto;
 import com.intabia.wikibot.dto.wikitabia.TagDto;
-import com.intabia.wikibot.services.httpsenders.HttpMethods;
-import com.intabia.wikibot.services.httpsenders.abstractions.ServerInteraction;
+import com.intabia.wikibot.integration.client.WikitabiaClient;
 import com.intabia.wikibot.services.httpsenders.abstractions.TelegramInteraction;
+import com.intabia.wikibot.services.scenaries.abstractions.Scenario;
 import com.intabia.wikibot.services.scenaries.implemetations.inner.Button;
 import com.intabia.wikibot.services.scenaries.implemetations.inner.ButtonsMarkup;
 import com.intabia.wikibot.util.Util;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import com.intabia.wikibot.services.scenaries.abstractions.Scenario;
 
 @Component
 @AllArgsConstructor
 public class TagsPageButtonScenario implements Scenario {
-  private final ServerInteraction serverInteraction;
   private final TelegramInteraction telegramInteraction;
   private final ChatDataContainer chatDataContainer;
+  private final WikitabiaClient wikitabiaClient;
 
   @Override
   public void doScenario(UpdateDto update, String botToken) {
@@ -32,8 +30,8 @@ public class TagsPageButtonScenario implements Scenario {
     } else if ("теги-".equals(messageFromUser)){
       --pageNumber;
     }
-    List<TagDto> tags = serverInteraction.getContentFromServer(HttpMethods.GET,
-        "http://localhost:8080/wikitabia/tag/page/" + pageNumber, TagDto[].class);
+    List<TagDto> tags = wikitabiaClient.getTagsPage(pageNumber);
+
     if (tags == null || tags.isEmpty()) {
       if (pageNumber < 0) {
         ++pageNumber;
