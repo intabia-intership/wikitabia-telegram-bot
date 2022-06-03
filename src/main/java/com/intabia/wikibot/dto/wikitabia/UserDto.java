@@ -3,6 +3,8 @@ package com.intabia.wikibot.dto.wikitabia;
 import java.util.UUID;
 
 import com.intabia.wikibot.dto.ReadableForUsers;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +12,8 @@ import lombok.NoArgsConstructor;
  * dto класс для передачи сущности users между frontend и backend.
  */
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class UserDto implements ReadableForUsers {
   /**

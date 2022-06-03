@@ -6,8 +6,9 @@ import java.io.IOException;
  * public api для взаимодействия с ботом
  */
 public interface BotStarter {
+
   /**
-   * метод для запуска бота.
+   * Метод для запуска бота.
    * NB-перед запуском требуется конфигурация через интерфейс PatternContainer.
    * @param botToken уникальный токен бота.
    */

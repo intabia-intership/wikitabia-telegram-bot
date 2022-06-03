@@ -1,9 +1,5 @@
 package com.intabia.wikibot.services.scenaries.implemetations.wikitabia;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.intabia.wikibot.datasavers.ChatScenarioChain;
 import com.intabia.wikibot.datasavers.ChatScenarioChainContainer;
 import com.intabia.wikibot.datasavers.Step;
@@ -11,20 +7,23 @@ import com.intabia.wikibot.dto.telegram.UpdateDto;
 import com.intabia.wikibot.dto.wikitabia.ResourceDto;
 import com.intabia.wikibot.dto.wikitabia.TagDto;
 import com.intabia.wikibot.dto.wikitabia.UserDto;
-import com.intabia.wikibot.services.httpsenders.HttpMethods;
-import com.intabia.wikibot.services.httpsenders.abstractions.ServerInteraction;
+import com.intabia.wikibot.integration.client.WikitabiaClient;
 import com.intabia.wikibot.services.httpsenders.abstractions.TelegramInteraction;
+import com.intabia.wikibot.services.scenaries.abstractions.Scenario;
 import com.intabia.wikibot.util.Util;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import com.intabia.wikibot.services.scenaries.abstractions.Scenario;
 
 @Component
 @AllArgsConstructor
 public class CreateResourceScenario implements Scenario {
   private final ChatScenarioChainContainer chainContainer;
-  private final ServerInteraction serverInteraction;
   private final TelegramInteraction telegramInteraction;
+  private WikitabiaClient wikitabiaClient;
+
 
   @Override
   public void doScenario(UpdateDto update, String botToken) {
@@ -79,8 +78,7 @@ public class CreateResourceScenario implements Scenario {
     List<TagDto> tags = reformatMessageToTags(Util.getTextFromMessage(update));
     dto.setTags(tags);
     dto.setCreator(new UserDto(Util.getTelegramUsername(update)));
-    serverInteraction.sendObjectToServer(botToken, chatId, dto,
-        "http://localhost:8080/wikitabia/api/telegram/resource/create", HttpMethods.POST);
+    wikitabiaClient.createResourceByTelegram(dto);
     telegramInteraction.sendMessageToUser(botToken, chatId,
         "Добавлен!", null);
     chainContainer.getScenarioChainCache().invalidate(chatId);

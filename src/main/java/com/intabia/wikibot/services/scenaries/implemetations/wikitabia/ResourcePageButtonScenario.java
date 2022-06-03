@@ -1,27 +1,30 @@
 package com.intabia.wikibot.services.scenaries.implemetations.wikitabia;
 
-import java.util.List;
+import static com.intabia.wikibot.util.Util.extractFromResponseEntity;
+import static com.intabia.wikibot.util.Util.extractWithDefaultValue;
 
 import com.intabia.wikibot.datasavers.ChatData;
 import com.intabia.wikibot.datasavers.ChatDataContainer;
 import com.intabia.wikibot.dto.telegram.UpdateDto;
 import com.intabia.wikibot.dto.wikitabia.ResourceDto;
-import com.intabia.wikibot.services.httpsenders.HttpMethods;
+import com.intabia.wikibot.integration.client.WikitabiaClient;
 import com.intabia.wikibot.services.httpsenders.abstractions.TelegramInteraction;
-import com.intabia.wikibot.util.Util;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
-import com.intabia.wikibot.services.httpsenders.abstractions.ServerInteraction;
 import com.intabia.wikibot.services.scenaries.abstractions.Scenario;
 import com.intabia.wikibot.services.scenaries.implemetations.inner.Button;
 import com.intabia.wikibot.services.scenaries.implemetations.inner.ButtonsMarkup;
+import com.intabia.wikibot.util.Util;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ResourcePageButtonScenario implements Scenario {
-  private ChatDataContainer chatDataContainer;
-  private TelegramInteraction telegramInteraction;
-  private ServerInteraction serverInteraction;
+  private final ChatDataContainer chatDataContainer;
+  private final TelegramInteraction telegramInteraction;
+  private final WikitabiaClient wikitabiaClient;
 
   @Override
   public void doScenario(UpdateDto update, String botToken) {
@@ -35,8 +38,13 @@ public class ResourcePageButtonScenario implements Scenario {
     } else if ("ресурсы-".equals(messageFromUser)){
       --pageNumber;
     }
-    List<ResourceDto> resources = serverInteraction.getContentFromServer(HttpMethods.GET,
-        "http://localhost:8080/wikitabia/api/pageable-resources/" + pageNumber, ResourceDto[].class);
+    long finalPageNumber = pageNumber;
+
+    List<ResourceDto> resources = extractWithDefaultValue(() ->
+        extractFromResponseEntity(() ->
+                wikitabiaClient.getResources(finalPageNumber), HttpStatus.OK),
+        ArrayList::new);
+
     if (resources == null || resources.isEmpty()) {
       if (pageNumber < 0) {
         ++pageNumber;
