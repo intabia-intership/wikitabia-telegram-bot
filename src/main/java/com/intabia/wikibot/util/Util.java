@@ -1,13 +1,18 @@
 package com.intabia.wikibot.util;
 
-import java.lang.reflect.Field;
-import java.util.List;
 import com.intabia.wikibot.dto.ReadableForUsers;
 import com.intabia.wikibot.dto.telegram.CallbackQueryDto;
 import com.intabia.wikibot.dto.telegram.UpdateDto;
+import com.intabia.wikibot.exceptions.FeignCommunicationException;
+import com.intabia.wikibot.exceptions.FeignIllegalResponseHttpCodeException;
 import com.intabia.wikibot.exceptions.NullArgumentException;
 import com.intabia.wikibot.exceptions.ReflectionException;
 import com.intabia.wikibot.services.scenaries.implemetations.inner.Button;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.function.Supplier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 public class Util {
 
@@ -70,7 +75,7 @@ public class Util {
     return null;
   }
 
-  public static  <T extends ReadableForUsers> String convertObjectsToReadableString(
+  public static <T extends ReadableForUsers> String convertObjectsToReadableString(
       List<T> listOfDtoClasses) {
     if (listOfDtoClasses == null) {
       throw new NullArgumentException("Аргумент - null");
@@ -80,5 +85,44 @@ public class Util {
       finalReadableString.append(dto.toReadableString());
     }
     return finalReadableString.toString();
+  }
+
+  /**
+   * Получить объект из поставщика ответа с ожидаемым http статусом.
+   *
+   * @param supplier поставщик ответа.
+   * @param expected ожидаемый статус ответа
+   *
+   * @return объект из ответа
+   * @param <T> класс типа возвращаемого объекта.
+   */
+  public static <T> T extractFromResponseEntity(Supplier<ResponseEntity<T>> supplier, HttpStatus expected) {
+    try {
+      ResponseEntity<T> response = supplier.get();
+      if (response.getStatusCode() == HttpStatus.OK) {
+        return response.getBody();
+      }  else {
+        throw new FeignIllegalResponseHttpCodeException(expected, response.getStatusCode());
+      }
+    } catch (Exception e) {
+      throw new FeignCommunicationException(e.getMessage());
+    }
+  }
+
+  /**
+   * Получить объект из поставщика с дефолтным значением при ошибке.
+   *
+   * @param onGood поставщик объекта, который может выкинуть ошибку.
+   * @param onFail поставщик значения по умолчанию для объекта при получении ошибки
+   *
+   * @return объект из поставщика, если ошибок не возникло, иначе объект по умолчанию.
+   * @param <T> класс типа возвращаемого объекта.
+   */
+  public static <T> T extractWithDefaultValue(Supplier<T> onGood, Supplier<T> onFail) {
+    try {
+      return onGood.get();
+    } catch (Exception e) {
+      return onFail.get();
+    }
   }
 }

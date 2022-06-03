@@ -23,8 +23,8 @@ public interface WikitabiaClient {
   ResponseEntity<List<ResourceDto>> getResourcePageByTag(@RequestBody TagDto tag);
 
   @GetMapping("/pageable-resources/{page}")
-  ResponseEntity<List<ResourceDto>> getResources(@PathVariable int page);
+  ResponseEntity<List<ResourceDto>> getResources(@PathVariable long page);
 
   @GetMapping(value = "/tag/page/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-  List<TagDto> getTagsPage(@PathVariable int page);
+  ResponseEntity<List<TagDto>> getTagsPage(@PathVariable long page);
 }

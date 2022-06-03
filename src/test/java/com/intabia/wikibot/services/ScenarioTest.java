@@ -1,10 +1,12 @@
 package com.intabia.wikibot.services;
 
+import com.intabia.wikibot.exceptions.ConnectionException;
 import com.intabia.wikibot.integration.client.WikitabiaClient;
 import com.intabia.wikibot.services.httpsenders.abstractions.TelegramInteraction;
 import com.intabia.wikibot.services.scenaries.implemetations.wikitabia.FilteredResourceScenario;
 import com.intabia.wikibot.services.util.CreateScenarioTestData;
 import com.intabia.wikibot.util.Util;
+import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -32,6 +34,7 @@ public class ScenarioTest implements CreateScenarioTestData {
   @BeforeEach
   void init() {
     Mockito.when(wikitabiaClient.getResourcePageByTag(goodTag)).thenReturn(ResponseEntity.ok(answerOnGoodTag));
+    Mockito.when(wikitabiaClient.getResourcePageByTag(badTag)).thenThrow(ConnectionException.class);
   }
 
   @Test
@@ -40,5 +43,13 @@ public class ScenarioTest implements CreateScenarioTestData {
     Mockito.verify(wikitabiaClient, Mockito.times(1)).getResourcePageByTag(goodTag);
     Mockito.verify(telegramInteraction, Mockito.times(1)).sendMessageToUser(botToken, goodChat.getChatId(),
         Util.convertObjectsToReadableString(answerOnGoodTag), null);
+  }
+
+  @Test
+  public void whenRunFilterScenario__WithSimulationConnectionError__ThenCheckSuccess__WithEmptyList() {
+    filteredResourceScenario.doScenario(filterBadUpdate, botToken);
+    Mockito.verify(wikitabiaClient, Mockito.times(1)).getResourcePageByTag(badTag);
+    Mockito.verify(telegramInteraction, Mockito.times(1)).sendMessageToUser(botToken, goodChat.getChatId(),
+        Util.convertObjectsToReadableString(new ArrayList<>()), null);
   }
 }

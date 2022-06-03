@@ -1,5 +1,8 @@
 package com.intabia.wikibot.services.scenaries.implemetations.wikitabia;
 
+import static com.intabia.wikibot.util.Util.extractFromResponseEntity;
+import static com.intabia.wikibot.util.Util.extractWithDefaultValue;
+
 import com.intabia.wikibot.dto.telegram.UpdateDto;
 import com.intabia.wikibot.dto.wikitabia.ResourceDto;
 import com.intabia.wikibot.dto.wikitabia.TagDto;
@@ -7,8 +10,10 @@ import com.intabia.wikibot.integration.client.WikitabiaClient;
 import com.intabia.wikibot.services.httpsenders.abstractions.TelegramInteraction;
 import com.intabia.wikibot.services.scenaries.abstractions.Scenario;
 import com.intabia.wikibot.util.Util;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,9 +27,12 @@ public class FilteredResourceScenario implements Scenario {
   @Override
   public void doScenario(UpdateDto update, String botToken) {
     String tagName = Util.getTextFromMessage(update).replaceAll("фильтр по тегу", "");
-    List<ResourceDto> resourcesDto = wikitabiaClient.getResourcePageByTag(TagDto.builder()
-        .name(tagName)
-        .build()).getBody();
+    List<ResourceDto> resourcesDto = extractWithDefaultValue(() ->
+        extractFromResponseEntity(() ->
+                wikitabiaClient.getResourcePageByTag(TagDto.builder()
+                    .name(tagName)
+                    .build()),
+            HttpStatus.OK), ArrayList::new);
     String messageToUser = Util.convertObjectsToReadableString(resourcesDto);
     telegramInteraction.sendMessageToUser(botToken, Util.getChatId(update),
         messageToUser, null);

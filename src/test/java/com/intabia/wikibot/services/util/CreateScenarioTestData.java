@@ -16,6 +16,10 @@ public interface CreateScenarioTestData {
       .name("Docker")
       .build();
 
+  TagDto badTag = TagDto.builder()
+      .name("ERROR404")
+      .build();
+
   UserDto goodUser = UserDto.builder()
       .firstName("Василий")
       .lastName("Лусников")
@@ -38,8 +42,17 @@ public interface CreateScenarioTestData {
       .chat(goodChat)
       .build();
 
+  MessageDto messageFilterBadTag = MessageDto.builder()
+      .text(String.format("%s%s", FilteredResourceScenario.INVOKE_MESSAGE, badTag.getName()))
+      .chat(goodChat)
+      .build();
+
   UpdateDto filterGoodUpdate = UpdateDto.builder()
       .message(messageFilterGoodTag)
+      .build();
+
+  UpdateDto filterBadUpdate = UpdateDto.builder()
+      .message(messageFilterBadTag)
       .build();
 
   List<ResourceDto> answerOnGoodTag = List.of(goodResource);

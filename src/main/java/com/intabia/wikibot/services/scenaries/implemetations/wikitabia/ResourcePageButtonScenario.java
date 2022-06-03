@@ -1,5 +1,8 @@
 package com.intabia.wikibot.services.scenaries.implemetations.wikitabia;
 
+import static com.intabia.wikibot.util.Util.extractFromResponseEntity;
+import static com.intabia.wikibot.util.Util.extractWithDefaultValue;
+
 import com.intabia.wikibot.datasavers.ChatData;
 import com.intabia.wikibot.datasavers.ChatDataContainer;
 import com.intabia.wikibot.dto.telegram.UpdateDto;
@@ -10,8 +13,10 @@ import com.intabia.wikibot.services.scenaries.abstractions.Scenario;
 import com.intabia.wikibot.services.scenaries.implemetations.inner.Button;
 import com.intabia.wikibot.services.scenaries.implemetations.inner.ButtonsMarkup;
 import com.intabia.wikibot.util.Util;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,7 +38,13 @@ public class ResourcePageButtonScenario implements Scenario {
     } else if ("ресурсы-".equals(messageFromUser)){
       --pageNumber;
     }
-    List<ResourceDto> resources = wikitabiaClient.getResources((int) pageNumber).getBody();
+    long finalPageNumber = pageNumber;
+
+    List<ResourceDto> resources = extractWithDefaultValue(() ->
+        extractFromResponseEntity(() ->
+                wikitabiaClient.getResources(finalPageNumber), HttpStatus.OK),
+        ArrayList::new);
+
     if (resources == null || resources.isEmpty()) {
       if (pageNumber < 0) {
         ++pageNumber;
