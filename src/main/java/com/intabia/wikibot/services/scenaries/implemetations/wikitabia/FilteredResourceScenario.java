@@ -14,13 +14,17 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class FilteredResourceScenario implements Scenario {
+
+  public static final String INVOKE_MESSAGE = "фильтр по тегу";
   private final TelegramInteraction telegramInteraction;
   private final WikitabiaClient wikitabiaClient;
 
   @Override
   public void doScenario(UpdateDto update, String botToken) {
     String tagName = Util.getTextFromMessage(update).replaceAll("фильтр по тегу", "");
-    List<ResourceDto> resourcesDto = wikitabiaClient.getResourcePageByTag(new TagDto(tagName)).getBody();
+    List<ResourceDto> resourcesDto = wikitabiaClient.getResourcePageByTag(TagDto.builder()
+        .name(tagName)
+        .build()).getBody();
     String messageToUser = Util.convertObjectsToReadableString(resourcesDto);
     telegramInteraction.sendMessageToUser(botToken, Util.getChatId(update),
         messageToUser, null);
@@ -28,6 +32,6 @@ public class FilteredResourceScenario implements Scenario {
 
   @Override
   public String getInvokeMessage() {
-    return "фильтр по тегу";
+    return INVOKE_MESSAGE;
   }
 }

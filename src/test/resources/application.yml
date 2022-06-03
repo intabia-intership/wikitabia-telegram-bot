@@ -1,0 +1,11 @@
+application:
+  token: 5551307997:AAGrxtpdfjSQySKul_6LJzLoIimq7VfsVD0
+  scheduler:
+    rate: 120
+
+server:
+  port: 8088
+
+client:
+  url:
+    wiki: http://localhost:8089/wikitabia/api

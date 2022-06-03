@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.intabia.wikibot.dto.ReadableForUsers;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TagDto implements ReadableForUsers {
   /**
    * id тега.

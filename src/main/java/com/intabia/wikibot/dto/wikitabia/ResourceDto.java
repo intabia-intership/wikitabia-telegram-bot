@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.intabia.wikibot.dto.ReadableForUsers;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
  * dto класс для передачи сущности resources между frontend и backend.
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResourceDto implements ReadableForUsers {
