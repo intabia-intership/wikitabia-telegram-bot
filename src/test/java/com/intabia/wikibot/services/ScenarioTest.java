@@ -2,7 +2,6 @@ package com.intabia.wikibot.services;
 
 import com.intabia.wikibot.integration.client.WikitabiaClient;
 import com.intabia.wikibot.services.httpsenders.abstractions.TelegramInteraction;
-import com.intabia.wikibot.services.scenaries.implemetations.wikitabia.CreateResourceScenario;
 import com.intabia.wikibot.services.scenaries.implemetations.wikitabia.FilteredResourceScenario;
 import com.intabia.wikibot.services.util.CreateScenarioTestData;
 import com.intabia.wikibot.util.Util;
@@ -17,9 +16,6 @@ import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ScenarioTest implements CreateScenarioTestData {
-
-  @Autowired
-  private CreateResourceScenario createResourceScenario;
 
   @Autowired
   private FilteredResourceScenario filteredResourceScenario;
