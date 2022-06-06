@@ -32,7 +32,7 @@ jobs:
           push: true
           context: .
           tags: ${{secrets.DOCKER_REGISTRY_URL}}/${{secrets.DOCKER_REGISTRY_REPO}}/${{secrets.DOCKER_REGISTRY_IMAGE}}:${{secrets.DOCKER_REGISTRY_IMAGE_TAG_DEV}}
-      - name: copy file via ssh password
+      - name: transfer docker-compose
         uses: appleboy/scp-action@master
         with:
           host: ${{secrets.DEV_HOST}}
@@ -41,7 +41,18 @@ jobs:
           port: 22
           source: "docker-compose.yaml"
           target: "wikibot/deployment"
-      - name: Run sshpass commands
+  deploy:
+    needs: delivery
+    environment: wikitabia-dev
+    runs-on: [ self-hosted ]
+    steps:
+      - name: Login to Docker registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{secrets.DOCKER_REGISTRY_URL}}
+          username: ${{secrets.DOCKER_REGISTRY_LOGIN}}
+          password: ${{secrets.DOCKER_REGISTRY_PASS}}
+      - name: Deploy docker-compose
         uses: matheusvanzan/sshpass-action@v2
         with:
           host: ${{secrets.DEV_HOST}}
