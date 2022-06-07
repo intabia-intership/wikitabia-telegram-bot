@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  wikitabia-bot:
+    image: ${REGISTRY_URL}/${WIKITABIA_BOT_REPO}/${WIKITABIA_BOT_IMAGE_NAME}:${WIKITABIA_BOT_IMAGE_TAG}
+    container_name: wikitabia-bot
+    restart: always
+    environment:
+      APPLICATION_TOKEN: ${APPLICATION_TOKEN}
+    networks:
+      wikitabia:
+    ports:
+      - "${WIKITABIA_BOT_OUTER_PORT}:8080"
+networks:
+  wikitabia:
