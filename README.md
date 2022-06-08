@@ -38,7 +38,8 @@ Telegram Bot для сохранения полезных ссылок на те
 
 Запусти
 1) Добавь в ресурсах токен тестового telegram бота. Параметр `application.token`.
-2) `java -jar wikibot-1.0-SNAPSHOT.jar`
+2) Добавь параметры брокера сообщений. Параметр `spring.rabbitmq.host`, `spring.rabbitmq.username`, `spring.rabbitmq.password`.
+3) `java -jar wikibot-1.0-SNAPSHOT.jar`
 
 ## Как проверить, что после моих изменений ничего не сломалось
 
