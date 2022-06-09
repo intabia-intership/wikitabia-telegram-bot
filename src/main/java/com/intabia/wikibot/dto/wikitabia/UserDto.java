@@ -1,10 +1,10 @@
 package com.intabia.wikibot.dto.wikitabia;
 
-import java.util.UUID;
-
 import com.intabia.wikibot.dto.ReadableForUsers;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 /**
  * dto класс для передачи сущности users между frontend и backend.

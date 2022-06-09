@@ -5,3 +5,9 @@ application:
 
 server:
   port: 8080
+
+spring:
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST}
+    username: ${SPRING_RABBITMQ_USERNAME}
+    password: ${SPRING_RABBITMQ_PASSWORD}

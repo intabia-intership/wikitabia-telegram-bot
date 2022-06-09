@@ -1,9 +1,6 @@
 package com.intabia.wikibot.services.scenaries.implemetations.wikitabia;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.intabia.wikibot.config.rabbitmq.RabbitConstant;
 import com.intabia.wikibot.datasavers.ChatScenarioChain;
 import com.intabia.wikibot.datasavers.ChatScenarioChainContainer;
 import com.intabia.wikibot.datasavers.Step;
@@ -11,17 +8,27 @@ import com.intabia.wikibot.dto.telegram.UpdateDto;
 import com.intabia.wikibot.dto.wikitabia.ResourceDto;
 import com.intabia.wikibot.dto.wikitabia.TagDto;
 import com.intabia.wikibot.dto.wikitabia.UserDto;
-import com.intabia.wikibot.services.httpsenders.HttpMethods;
+import com.intabia.wikibot.mappers.JsonMapper;
 import com.intabia.wikibot.services.httpsenders.abstractions.ServerInteraction;
 import com.intabia.wikibot.services.httpsenders.abstractions.TelegramInteraction;
-import com.intabia.wikibot.util.Util;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 import com.intabia.wikibot.services.scenaries.abstractions.Scenario;
+import com.intabia.wikibot.util.Util;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Slf4j
 public class CreateResourceScenario implements Scenario {
+  @Autowired
+  private RabbitTemplate messageBroker;
   private final ChatScenarioChainContainer chainContainer;
   private final ServerInteraction serverInteraction;
   private final TelegramInteraction telegramInteraction;
@@ -79,8 +86,8 @@ public class CreateResourceScenario implements Scenario {
     List<TagDto> tags = reformatMessageToTags(Util.getTextFromMessage(update));
     dto.setTags(tags);
     dto.setCreator(new UserDto(Util.getTelegramUsername(update)));
-    serverInteraction.sendObjectToServer(botToken, chatId, dto,
-        "http://localhost:8080/wikitabia/api/telegram/resource/create", HttpMethods.POST);
+    messageBroker.convertAndSend(RabbitConstant.queueName, JsonMapper.objectToJson(dto));
+    log.info("Resource '" + dto.getName() + "' has been loaded into the message broker's queue '" + RabbitConstant.queueName + "'");
     telegramInteraction.sendMessageToUser(botToken, chatId,
         "Добавлен!", null);
     chainContainer.getScenarioChainCache().invalidate(chatId);
