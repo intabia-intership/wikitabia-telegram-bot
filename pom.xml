@@ -8,6 +8,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <spring.boot.version>2.6.6</spring.boot.version>
+        <minio.version>1.0.0</minio.version>
     </properties>
 
     <parent>
@@ -68,5 +69,17 @@
             <artifactId>caffeine</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>3.1.3</version>
+        </dependency>
+        <!--Spring Boot Starter MinIO dependency-->
+<!--        <dependency>-->
+<!--            <groupId>ru.dnx</groupId>-->
+<!--            <artifactId>spring-boot-starter-minio</artifactId>-->
+<!--            <version>${minio.version}</version>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

@@ -62,6 +62,7 @@ public class TelegramInteractionImpl implements TelegramInteraction {
     return httpPost;
   }
 
+
   @Override
   public void sendSomeContentToUser(String botToken, String chatId, String animId, ContentType contentType) {
     if (botToken == null || chatId == null) {

@@ -1,7 +1,11 @@
 application:
-  token: ${APPLICATION_TOKEN}
+  token: 5507567829:AAFVKMCFeUMh0fLl7yQDjBbIfRrf3nz4yNQ
+  url: https://api.telegram.org/bot${application.token}
   scheduler:
-    rate: 120
+    rate: 12000
 
 server:
   port: 8080
+logging:
+  level:
+    root: debug

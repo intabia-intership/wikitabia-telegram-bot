@@ -1,5 +1,7 @@
 package com.intabia.wikibot.services.scenaries.implemetations.wikitabia;
 
+import com.intabia.wikibot.client.SendFileSto;
+import com.intabia.wikibot.client.TelegramClient;
 import java.util.List;
 
 import com.intabia.wikibot.datasavers.ChatData;
@@ -20,36 +22,14 @@ import com.intabia.wikibot.services.scenaries.implemetations.inner.ButtonsMarkup
 @AllArgsConstructor
 public class ResourcePageButtonScenario implements Scenario {
   private ChatDataContainer chatDataContainer;
-  private TelegramInteraction telegramInteraction;
-  private ServerInteraction serverInteraction;
+  private final TelegramClient telegramClient;
 
   @Override
   public void doScenario(UpdateDto update, String botToken) {
-    ButtonsMarkup buttonsMarkup = new ButtonsMarkup(new Button[][]{new Button[]{
-        new Button("Назад", "ресурсы-"),new Button("Еще", "ресурсы+")
-    }});
-    long pageNumber = getPageNumberFromChatData(Util.getChatId(update));
-    String messageFromUser = Util.getTextFromMessage(update);
-    if ("ресурсы+".equals(messageFromUser)) {
-      ++pageNumber;
-    } else if ("ресурсы-".equals(messageFromUser)){
-      --pageNumber;
-    }
-    List<ResourceDto> resources = serverInteraction.getContentFromServer(HttpMethods.GET,
-        "http://localhost:8080/wikitabia/api/pageable-resources/" + pageNumber, ResourceDto[].class);
-    if (resources == null || resources.isEmpty()) {
-      if (pageNumber < 0) {
-        ++pageNumber;
-      } else {
-        --pageNumber;
-      }
-      return;
-    }
-    String messageToUser = Util.convertObjectsToReadableString(resources);
-    telegramInteraction.sendMessageToUser(botToken, Util.getChatId(update), messageToUser,
-        buttonsMarkup);
-    chatDataContainer.addOrUpdateChatData(Util.getChatId(update),
-        new ChatData(pageNumber));
+    telegramClient.sendFileById(SendFileSto.builder()
+            .chatId(Util.getChatId(update))
+            .document("CQACAgIAAxkDAAMuYxVlpxDIGoUePw4vg71bE-YldEcAAooiAAK8OalIvTtQq41ExDwpBA")
+            .build());
   }
 
   private long getPageNumberFromChatData(String chatId) {
@@ -62,6 +42,6 @@ public class ResourcePageButtonScenario implements Scenario {
 
   @Override
   public String getInvokeMessage() {
-    return "ресурсы";
+    return "песня";
   }
 }

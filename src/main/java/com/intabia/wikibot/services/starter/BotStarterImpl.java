@@ -1,5 +1,6 @@
 package com.intabia.wikibot.services.starter;
 
+import com.intabia.wikibot.client.TelegramClient;
 import com.intabia.wikibot.datasavers.ChatScenarioChain;
 import com.intabia.wikibot.datasavers.ChatScenarioChainContainer;
 import com.intabia.wikibot.dto.telegram.UpdateDto;
@@ -23,6 +24,7 @@ public class BotStarterImpl implements BotStarter {
     private final ChatScenarioChainContainer chainContainer;
     private final ScenarioService scenarioServiceImpl;
     private final TelegramInteraction telegramInteraction;
+    private final TelegramClient telegramClient;
 
     public void startBot(String botToken) {
         scenarioServiceImpl.addScenarios();
